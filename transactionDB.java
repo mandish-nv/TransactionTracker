@@ -66,5 +66,7 @@ public class transactionDB {
 
 }
 
-// create table records (id int primary key,name varchar(30),balance double,password varchar(20));
-// create table logs(logID int primary key AUTO_INCREMENT,senderID int,sender varchar(30),amount double, receiverID int, receiver varchar(30));
+// create table records (id int primary key,name varchar(30),balance
+// double,password varchar(20));
+// create table logs(logID int primary key AUTO_INCREMENT,senderID int,sender
+// varchar(30),amount double, receiverID int, receiver varchar(30));
