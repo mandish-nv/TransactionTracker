@@ -1,7 +1,7 @@
 package Project;
 
 public class transactionusers {
-  String userID = new String();
+  int userID;
   String userName = new String();
   double balance = 0;
   String password = new String();
