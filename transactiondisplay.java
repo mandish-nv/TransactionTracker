@@ -1,30 +1,75 @@
 package Project;
 
 import java.sql.ResultSet;
+import java.util.Scanner;
 
 public class transactiondisplay {
-  public void viewTable(transactionDB tdb) throws Exception {
-    ResultSet resultSet;
-    resultSet = tdb.transactionDisplay("select * from logs;");
-    System.out.println("logID\tsenderID\tsender\t\tAmount\t\tReceiverID\t\tReceiver");
+  public void viewTable() throws Exception {
+    transactionDB tdb = new transactionDB();
+    ResultSet resultSet = tdb.transactionDisplay("select * from logs;");
+    System.out.println("logID\tsenderID\tsender\t\tAmount\tReceiverID\tReceiver\t\t\tDate/Time");
     System.out
-        .println("-----------------------------------------------------------------------------------------");
+        .println(
+            "-----------------------------------------------------------------------------------------------------------------------------");
+    String format = "%5s %8s %15s %15s %10s %15s %35s";
     while (resultSet.next()) {
-      System.out.println(
-          resultSet.getInt("logID") + "\t" + resultSet.getInt("senderID") + "\t\t" + resultSet.getString("sender")
-              + "\t\tRs." + resultSet.getDouble("amount") + "\t\t" + resultSet.getInt("receiverID") + "\t\t"
-              + resultSet.getString("receiver"));
+      System.out.printf(format,
+          resultSet.getInt("logID"), resultSet.getInt("senderID"), resultSet.getString("sender"),
+          "Rs." + resultSet.getDouble("amount"), resultSet.getInt("receiverID"),
+          resultSet.getString("receiver"), resultSet.getString("DateTime") + "\n");
     }
   }
 
-  public void viewUsers(transactionDB tdb) throws Exception {
-    ResultSet resultSet;
-    resultSet = tdb.transactionDisplay("select * from records;");
+  public void viewUsers() throws Exception {
+    transactionDB tdb = new transactionDB();
+    ResultSet resultSet = tdb.transactionDisplay("select * from records;");
     System.out.println("id\tName\t\tbalance");
     System.out.println("--------------------------------------");
     while (resultSet.next()) {
       System.out.println(
           resultSet.getInt("id") + "\t" + resultSet.getString("name") + "\t\t" + resultSet.getDouble("balance"));
+    }
+  }
+
+  public void viewSingleUser() throws Exception {
+    transactionDB tdb = new transactionDB();
+    transactionusers tuser = new transactionusers();
+    Scanner obj = new Scanner(System.in);
+    char ch;
+
+    System.out.print("Enter your ID: ");
+    tuser.userID = obj.nextInt();
+    obj.nextLine();
+    System.out.print("Enter your name: ");
+    tuser.userName = obj.nextLine();
+
+    if (!tdb.userValidity(tuser.userID, tuser.userName)) {
+      System.out.println("not found");
+      ch = (char) System.in.read();
+      return;
+    }
+
+    System.out.print("Enter your password: ");
+    tuser.password = obj.nextLine();
+
+    if (!tdb.passwordValidity(tuser.userID, tuser.password)) {
+      System.out.println("Wrong password");
+      ch = (char) System.in.read();
+      return;
+    }
+
+    ResultSet resultSet = tdb.transactionDisplay("select * from logs where senderID=" + tuser.userID + ";");
+    System.out.println("logID\tsenderID\tsender\t\tAmount\tReceiverID\tReceiver\t\t\tDate/Time");
+    System.out
+        .println(
+            "-----------------------------------------------------------------------------------------------------------------------------");
+    String format = "%5s %8s %15s %15s %10s %15s %35s";
+    while (resultSet.next()) {
+      System.out.printf(format,
+          resultSet.getInt("logID"), resultSet.getInt("senderID"), resultSet.getString("sender"),
+          "Rs." + resultSet.getDouble("amount"), resultSet.getInt("receiverID"),
+          resultSet.getString("receiver"), resultSet.getString("DateTime") + "\n");
+
     }
   }
 }

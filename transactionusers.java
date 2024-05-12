@@ -1,6 +1,7 @@
 package Project;
 
 import java.util.Scanner;
+import java.util.Date;
 
 public class transactionusers {
   int userID;
@@ -8,7 +9,8 @@ public class transactionusers {
   double balance = 0;
   String password = new String();
 
-  public void createUser(transactionDB tdb) throws Exception {
+  public void createUser() throws Exception {
+    transactionDB tdb = new transactionDB();
     Scanner obj = new Scanner(System.in);
     System.out.print("Enter your ID: ");
     userID = obj.nextInt();
@@ -26,7 +28,8 @@ public class transactionusers {
     System.out.println("User has been created.");
   }
 
-  public void transact(transactionDB tdb) throws Exception {
+  public void transact() throws Exception {
+    transactionDB tdb = new transactionDB();
     double amount;
     char ch;
     String sqlQueryString;
@@ -85,14 +88,16 @@ public class transactionusers {
       return;
     }
 
+    Date date = new Date();
+
     // transaction
     sqlQueryString = "update records set balance = balance + " + amount + " where id=" + receiver.userID + ";";
     tdb.transactionEntry(sqlQueryString);
     sqlQueryString = "update records set balance = balance - " + amount + " where id=" + sender.userID + ";";
     tdb.transactionEntry(sqlQueryString);
 
-    tdb.transactionEntry("insert into logs(senderID,sender,amount,receiverID,receiver) values (" + sender.userID
-        + ",'" + sender.userName + "'," + amount + "," + receiver.userID + ",'" + receiver.userName + "')");
+    tdb.transactionEntry("insert into logs(senderID,sender,amount,receiverID,receiver,DateTime) values (" + sender.userID
+        + ",'" + sender.userName + "'," + amount + "," + receiver.userID + ",'" + receiver.userName + "','"+date+"');");
 
     System.out
         .println("\nRs." + amount + " has been transferred from " + sender.userName + " to " + receiver.userName);
