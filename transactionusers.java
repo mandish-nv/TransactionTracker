@@ -8,13 +8,21 @@ public class transactionusers {
   String userName = new String();
   double balance = 0;
   String password = new String();
+  char ch;
+  Scanner obj = new Scanner(System.in);
 
   public void createUser() throws Exception {
     transactionDB tdb = new transactionDB();
-    Scanner obj = new Scanner(System.in);
     System.out.print("Enter your ID: ");
     userID = obj.nextInt();
     obj.nextLine();
+
+    if(tdb.idValidity(userID)){
+      System.out.println("ID is already taken");
+      ch = (char) System.in.read();
+      return;
+    }
+
     System.out.print("Enter your name: ");
     userName = obj.nextLine();
     System.out.print("Enter your balance: ");
@@ -31,9 +39,7 @@ public class transactionusers {
   public void transact() throws Exception {
     transactionDB tdb = new transactionDB();
     double amount;
-    char ch;
     String sqlQueryString;
-    Scanner obj = new Scanner(System.in);
 
     transactionusers sender = new transactionusers();
     transactionusers receiver = new transactionusers();
@@ -45,7 +51,7 @@ public class transactionusers {
     sender.userName = obj.nextLine();
 
     if (!tdb.userValidity(sender.userID, sender.userName)) {
-      System.out.println("not found");
+      System.out.println("User not found");
       ch = (char) System.in.read();
       return;
     }
@@ -56,7 +62,7 @@ public class transactionusers {
     System.out.print("Enter your Receiver name: ");
     receiver.userName = obj.nextLine();
 
-    if (sender.userID == receiver.userID && sender.userName.equals(receiver.userName)) {
+    if (sender.userID == receiver.userID) {
       System.out.println("ERROR! Sender and Receiver are same.");
       ch = (char) System.in.read();
       return;
@@ -81,7 +87,6 @@ public class transactionusers {
       return;
     }
 
-    // underflow
     if (!tdb.amountValidity(sender.userID, amount)) {
       System.out.println("Insufficient balance");
       ch = (char) System.in.read();
@@ -101,6 +106,5 @@ public class transactionusers {
 
     System.out
         .println("\nRs." + amount + " has been transferred from " + sender.userName + " to " + receiver.userName);
-
   }
 }

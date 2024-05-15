@@ -4,9 +4,9 @@ import java.sql.ResultSet;
 import java.util.Scanner;
 
 public class transactiondisplay {
-  public void viewTable() throws Exception {
+  public void viewTable(String sql) throws Exception {
     transactionDB tdb = new transactionDB();
-    ResultSet resultSet = tdb.transactionDisplay("select * from logs;");
+    ResultSet resultSet = tdb.transactionDisplay(sql);
     System.out.println("logID\tsenderID\tsender\t\tAmount\tReceiverID\tReceiver\t\t\tDate/Time");
     System.out
         .println(
@@ -44,7 +44,7 @@ public class transactiondisplay {
     tuser.userName = obj.nextLine();
 
     if (!tdb.userValidity(tuser.userID, tuser.userName)) {
-      System.out.println("not found");
+      System.out.println("User not found");
       ch = (char) System.in.read();
       return;
     }
@@ -58,18 +58,16 @@ public class transactiondisplay {
       return;
     }
 
-    ResultSet resultSet = tdb.transactionDisplay("select * from logs where senderID=" + tuser.userID + ";");
-    System.out.println("logID\tsenderID\tsender\t\tAmount\tReceiverID\tReceiver\t\t\tDate/Time");
-    System.out
-        .println(
-            "-----------------------------------------------------------------------------------------------------------------------------");
-    String format = "%5s %8s %15s %15s %10s %15s %35s";
-    while (resultSet.next()) {
-      System.out.printf(format,
-          resultSet.getInt("logID"), resultSet.getInt("senderID"), resultSet.getString("sender"),
-          "Rs." + resultSet.getDouble("amount"), resultSet.getInt("receiverID"),
-          resultSet.getString("receiver"), resultSet.getString("DateTime") + "\n");
+    System.out.print("\033[H\033[2J");
+    System.out.flush();
+    
+    System.out.println("ID: "+tuser.userID+"\tUser: " + tuser.userName +"\n\n");
 
-    }
+    System.out.println("SENT:\n");
+    viewTable("select * from logs where senderID=" + tuser.userID + ";");
+
+    System.out.println("\n\n");
+    System.out.println("RECEIVED:\n");
+    viewTable("select * from logs where receiverID=" + tuser.userID + ";");
   }
 }

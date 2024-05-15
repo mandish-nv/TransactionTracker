@@ -22,12 +22,18 @@ public class transactionDB {
     return resultSet;
   }
 
+  public boolean idValidity(int id) throws Exception {
+    ResultSet resultSet = transactionDisplay("select * from records where id=" + id + ";");
+    while (resultSet.next()) {
+      if (id == resultSet.getInt("id")) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public boolean userValidity(int id, String name) throws Exception {
-    Class.forName("com.mysql.cj.jdbc.Driver");
-    Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/transaction", "root", "root");
-    Statement statement = connection.createStatement();
-    String sqlQueryString = "select * from records where id=" + id + " and name='" + name + "';";
-    ResultSet resultSet = statement.executeQuery(sqlQueryString);
+    ResultSet resultSet = transactionDisplay("select * from records where id=" + id + " and name='" + name + "';");
     while (resultSet.next()) {
       if (id == resultSet.getInt("id") && name.equals(resultSet.getString("name"))) {
         return true;
@@ -37,11 +43,7 @@ public class transactionDB {
   }
 
   public boolean passwordValidity(int id, String password) throws Exception {
-    Class.forName("com.mysql.cj.jdbc.Driver");
-    Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/transaction", "root", "root");
-    Statement statement = connection.createStatement();
-    String sqlQueryString = "select * from records where id=" + id + " and password='" + password + "';";
-    ResultSet resultSet = statement.executeQuery(sqlQueryString);
+    ResultSet resultSet = transactionDisplay("select * from records where id=" + id + " and password='" + password + "';");
     while (resultSet.next()) {
       if (id == resultSet.getInt("id") && password.equals(resultSet.getString("password"))) {
         return true;
@@ -51,11 +53,7 @@ public class transactionDB {
   }
 
   public boolean amountValidity(int id, double amount) throws Exception {
-    Class.forName("com.mysql.cj.jdbc.Driver");
-    Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/transaction", "root", "root");
-    Statement statement = connection.createStatement();
-    String sqlQueryString = "select * from records where id=" + id + ";";
-    ResultSet resultSet = statement.executeQuery(sqlQueryString);
+    ResultSet resultSet = transactionDisplay("select * from records where id=" + id + ";");
     while (resultSet.next()) {
       if (id == resultSet.getInt("id") && amount <= resultSet.getDouble("balance")) {
         return true;
@@ -63,8 +61,7 @@ public class transactionDB {
     }
     return false;
   }
-
 }
 
 // create table records (id int primary key,name varchar(30),balance double,password varchar(20));
-// create table logs(logID int primary key AUTO_INCREMENT,senderID int,sender varchar(30),amount double, receiverID int, receiver varchar(30));
+// create table logs(logID int primary key AUTO_INCREMENT,senderID int,sender varchar(30),amount double, receiverID int, receiver varchar(30),DateTime varchar(30));

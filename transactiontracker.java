@@ -41,7 +41,7 @@ public class transactiontracker {
 
         case 3:
           clear();
-          tdisplay.viewTable();
+          tdisplay.viewTable("select * from logs;");
           ch = (char) System.in.read();
           break;
 
